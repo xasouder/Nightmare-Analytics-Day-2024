@@ -82,13 +82,15 @@ PROC GLM data = nightmare_cat;
  output out=stdres_MLR p=predict student=resids;
  *outputting residuals;
  lsmeans recent_life_changes / pdiff=all adjust=tukey cl;
+ lsmeans nightmare_content / pdiff=all adjust=tukey cl;
  *least squared means, pdiff = pairwise differences for all the level of programs, 
  tukey is comparisons, stat adjustment of inflation of type one error rate;
 run; quit;
 PROC UNIVARIATE data=stdres_MLR cibasic (alpha=.05) normal plot;
 var resids;
 RUN;
-/*chi square test to see if what I have works in this manner, i dont understand the output besides it being sig*/
+
+/*chi square test showing the correlation between different variables*/
 PROC FREQ data=nightmare_cat;
 tables gender*recent_life_changes* Psychological_Problems_at_School/ chisq expected cellchi2;
 RUN;
@@ -102,14 +104,3 @@ PROC FREQ data=nightmare_cat;
 tables gender*nightmare_content* Psychological_Problems_at_School/ chisq expected cellchi2;
 RUN;
 
-
-
-
-
-
-*describe variables, and dv. assess assumptions, cleaning data we did, sample size, 
-inferential analysis and assumptions were assessed and we did not find any significance
-parameter estimate model;
-/* bar chart for frequencies and then overlay frequencies ; nightmare content there measurement error 
-in the recording of the data so that we are unable to complete inferential analysis recall bias, interpretation issues*/
-/* recent life changes gender, age, nightmare_content*/ *r-squared value and provide it to the model;
