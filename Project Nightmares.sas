@@ -70,6 +70,10 @@ Run;
 PRoc freq data = nightmare_cat;
 tables nightmare_content*night_cat;
 Run;
+PRoc freq data = nightmare_cat;
+tables nightmare_content*recent_life_changes;
+by sig_night_cat;
+Run;
 
 
 *GLM creates the model for the multiple linear regression with the univariate assessing residuals (broken currently though);
@@ -79,15 +83,21 @@ PROC GLM data = nightmare_cat;
  *class has categorical variables;
  model Psychological_Problems_at_School = recent_life_changes nightmare_content gender/ solution;
  *if it is 0 it is the reference group;
- output out=stdres_MLR p=predict student=resids;
+ output out=stdres_MLR p=predict student=resids rstudent=rstudent_val;
  *outputting residuals;
  lsmeans recent_life_changes / pdiff=all adjust=tukey cl;
  lsmeans nightmare_content / pdiff=all adjust=tukey cl;
  *least squared means, pdiff = pairwise differences for all the level of programs, 
  tukey is comparisons, stat adjustment of inflation of type one error rate;
 run; quit;
+/*plots the residuals*/
 PROC UNIVARIATE data=stdres_MLR cibasic (alpha=.05) normal plot;
 var resids;
+RUN;
+PROC SGPLOT data=stdres_MLR;
+    SCATTER x=Predict y=resids ;
+    
+    REFLINE 0 / AXIS=y;
 RUN;
 
 /*chi square test showing the correlation between different variables*/
@@ -103,4 +113,9 @@ RUN;
 PROC FREQ data=nightmare_cat;
 tables gender*nightmare_content* Psychological_Problems_at_School/ chisq expected cellchi2;
 RUN;
+
+/*Citation*/
+/*Robert, G., & Zadra, A. (2014). Thematic and content analysis of idiopathic nightmares and Bad dreams.
+Sleep, 37(2), 409–417. https://doi.org/10.5665/sleep.3426 ?*/
+
 
